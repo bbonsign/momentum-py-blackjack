@@ -114,11 +114,9 @@ class Deck:
 
     def __init__(self):
         self.number = 52
-        self.pile = {}
         ranks = [i for i in range(2, 11)]+['J', 'Q', 'K', 'A']
-        for suit in ['S', 'C', 'D', 'H']:
-            for rank in ranks:
-                self.pile[Card(rank, suit)] = 1
+        pairs = [(Card(rank, suit), 1) for suit in ['S', 'C', 'D', 'H'] for rank in ranks]
+        self.pile = dict(pairs)
 
     def deal(self):
         item = [0, 0]
