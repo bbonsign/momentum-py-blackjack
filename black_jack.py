@@ -2,31 +2,106 @@ import random as rand
 
 
 class Game:
+    """
+    Sets up a simplified dealer vs player blackjack game.
+    As soon as the player hits 21, they win.
+    """
+
     def __init__(self):
         self.deck = Deck()
-        self.dealer = Player()
-        self.player = Player()
+        self.dealer = Player('Dealer')
+        player_name = input("Enter the player's name: ")
+        self.player = Player(f' {player_name} ')
+        self.stop = False
+        self.winner = []
 
-    def start_game():
-        pass
+        self.start_game()
+
+    def deal_to(self, player):
+        player.add_to_hand(self.deck.deal())
+
+    def print_table(self):
+        dealer = self.dealer
+        player = self.player
+
+        def center(value):
+            return str(value).center(28)
+        print(f"""
+{'='*60}
+|{center(dealer)}||{center(player)}|
+|{center(dealer.hand)}||{center(player.hand)}|
+|{center(dealer.hand_value())}||{center(player.hand_value())}|
+{'='*60}""")
+
+    def start_game(self):
+        self.dealer.add_to_hand(self.deck.deal())
+        self.player.add_to_hand(self.deck.deal())
+        self.player.add_to_hand(self.deck.deal())
+        self.print_table()
+        self.update()
+
+    def player_action(self):
+        while self.player.hand_value() < 21:
+            action = input("Hit or stay? ")
+            if action == 'hit':
+                self.deal_to(self.player)
+                self.print_table()
+            elif action == 'stay':
+                break
+        if self.player.hand_value() == 21:
+            self.winner = self.player
+            self.stop = True
+        elif self.player.hand_value() > 21:
+            self.winner = self.dealer
+            self.stop = True
+
+    def dealer_action(self):
+        if self.player.hand_value() >= 21:
+            return
+        else:
+            while self.dealer.hand_value() <= self.player.hand_value() and self.dealer.hand_value() < 21:
+                self.deal_to(self.dealer)
+                self.print_table()
+        if self.dealer.hand_value() > 21:
+            self.winner = self.player
+            self.stop = True
 
     def update(self):
-        pass
+        self.player_action()
+        self.dealer_action()
+        while not self.stop:
+            self.player_action()
+            self.dealer_action()
+            # self.player_action()
+            # self.dealer_action()
+            # if self.player.hand_value() < self.dealer.hand_value() <= 21:
+            #     self.winner = self.dealer
+            #     self.stop = True
+            # elif self.dealer.hand_value() < self.player.hand_value() <= 21:
+            #     self.winner = self.player
+            #     self.stop = True
+            # elif self.player.hand_value() == self.dealer.hand_value() == 21:
+            #     self.winner = 'a Draw'
+            #     self.stop = True
+        print(f"""
+The winner is {str(self.winner)}
+""")
 
 
 class Card:
     def __init__(self, rank, suit):
         self.rank = rank
         self.suit = suit
-        self.pretty_suits = {
-            'S': '\u2664',
-            'C': '\u2667',
-            'H': '\u2661',
-            'D': '\u2662'
-        }
+
+    pretty_suits = {
+        'S': '\u2664',
+        'C': '\u2667',
+        'H': '\u2661',
+        'D': '\u2662'
+    }
 
     def __str__(self):
-        return f"{self.rank} {self.pretty_suits[self.suit]}"
+        return f"{self.rank} {Card.pretty_suits[self.suit]}"
 
     def __repr__(self):
         return str(self)
@@ -44,6 +119,10 @@ class Card:
 
 
 class Deck:
+    """
+    Stores a deck of cards, deals cards, and keeps track of what cards are left
+    """
+
     def __init__(self):
         self.number = 52
         self.pile = {}
@@ -61,14 +140,17 @@ class Deck:
         return item[0]
 
 
-# class Dealer:
-#     def __init__(self):
-#         pass
-
-
 class Player:
-    def __init__(self):
+    def __init__(self, name):
         self.hand = []
+        self.name = name
+        # self.name = "Player" +input("Enter the player's name? ")
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
 
     def add_to_hand(self, card):
         self.hand.append(card)
@@ -77,7 +159,5 @@ class Player:
         return sum([card.value() for card in self.hand])
 
 
-player = Player()
-deck = Deck()
-card1 = deck.deal()
-card2 = deck.deal()
+if __name__ == '__main__':
+    Game()
