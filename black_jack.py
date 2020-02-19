@@ -147,7 +147,7 @@ class Player:
     def hand_value(self):
         value = sum([card.value() for card in self.hand])
         ace_in_hand = [card.rank == 'A' for card in self.hand]
-        if True in ace_in_hand and value >21:
+        if True in ace_in_hand and value > 21:
             return value - 10
         else:
             return value
