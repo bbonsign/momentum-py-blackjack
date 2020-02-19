@@ -72,17 +72,6 @@ class Game:
         while not self.stop:
             self.player_action()
             self.dealer_action()
-            # self.player_action()
-            # self.dealer_action()
-            # if self.player.hand_value() < self.dealer.hand_value() <= 21:
-            #     self.winner = self.dealer
-            #     self.stop = True
-            # elif self.dealer.hand_value() < self.player.hand_value() <= 21:
-            #     self.winner = self.player
-            #     self.stop = True
-            # elif self.player.hand_value() == self.dealer.hand_value() == 21:
-            #     self.winner = 'a Draw'
-            #     self.stop = True
         print(f"""
 The winner is {str(self.winner)}
 """)
